@@ -6,9 +6,9 @@ import numpy as np
 import random
 # load image as pixel array
 image = cv.imread('groupGray.jpg')
- # summarize shape of the pixel array
 
-#In the image var,  we have an ndarray contain the pixels of group image
+
+#In the image variable,  we have an ndarray contain the pixels of group image
 #512 rows, 1024 colums 
 
 ############################################
