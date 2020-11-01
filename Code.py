@@ -20,8 +20,9 @@ def DecToBin(n):
     a.reverse()
     return a
 
-
-
+def BinToDec(binNum):
+    res = int("".join(str(x) for x in binNum), 2)
+    return res 
 
 #In the image variable,  we have an ndarray contain the pixels of group image
 #512 rows, 1024 colums 
@@ -103,11 +104,6 @@ newDict = dict(corellatedValuesSortedList)
 
 
 
-
-
-
-
-
 # STEP NO 4
 
 # CROSS-OVER
@@ -118,13 +114,13 @@ sortedPopulationList = []
 for key in newDict.keys():
     sortedPopulationList.append(key)
 
+
+populationList.clear()
 for i in range(0, len(sortedPopulationList), 2):
     pt1 = sortedPopulationList[i][0]
     pt2 = sortedPopulationList[i][1]
     pt3 = sortedPopulationList[i+1][0]
     pt4 = sortedPopulationList[i+1][1]
-
-
 
     pt1Bin = DecToBin(pt1)
     pt2Bin = DecToBin(pt2)
@@ -159,8 +155,7 @@ for i in range(0, len(sortedPopulationList), 2):
 
 
     rand = random.randint(0, len(p1)-1)
-  
-
+    # print(f"Before Crossover: p1: {p1} \n p2: {p2}")
     p1.reverse()
     p2.reverse()
 
@@ -169,7 +164,7 @@ for i in range(0, len(sortedPopulationList), 2):
 
     p1.reverse()
     p2.reverse()
-
+    # print(f"after crossover {rand} \n, p1: {p1} \np2: {p2}")
 
 # Now Mutation
 
@@ -185,6 +180,32 @@ for i in range(0, len(sortedPopulationList), 2):
         p2[rand] = 1
     else:
         p2[rand] = 0
+
+    newP1_x = []
+    newP1_y = []
+    newP2_x = []
+    newP2_y = []
+    for i in range(0, len(pt1Bin)):
+        newP1_x.append(p1.pop())
+    newP1_y = p1
+    for i in range(0, len(pt3Bin)):
+        newP2_x.append(p2.pop())
+    newP2_y = p2
+    x1 = BinToDec(newP1_x)
+    y1 = BinToDec(newP1_y)
+
+    x2 = BinToDec(newP2_x)
+    y2 = BinToDec(newP2_y)
+    temp1 = [x1, y1]
+    temp2 = [x2, y2]
+    populationList.append(temp1)
+    populationList.append(temp2)
+
+
+print(populationList[99][0])
+            
+
+    
 
 
 
