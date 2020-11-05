@@ -11,11 +11,13 @@ targetImage = cv.imread('boothiGray.jpg')
 #defining all the required functions or functionality HERE
 def DecToBin(n):
     a=[]
-    while(n>=0):
+    while(n>0):
         dig=n%2
         a.append(dig)
         n=n//2
     a.reverse()
+    if len(a) == 0:
+        a.append(0)
     return a
 def BinToDec(binNum):
     # print(binNum)
@@ -47,7 +49,6 @@ def initializePopulationRandomly():
 
 def CheckForCoRelation(threashold):
     for po in range(0, populationSize):
-        matchPercentage = 0
 
         x1 = populationList[po][0]
         y1 = populationList[po][1]
@@ -58,12 +59,14 @@ def CheckForCoRelation(threashold):
         x2 = x1 + rowsInSmallImage
         y2 = y1 + colsInSmallImage
         if (x2 < 512) and (y2 < 1024):
+            matchPercentage = 0
             for row in range(len(targetImage)):    
                 for col in range(len(targetImage[0])):
                     if groupImage[x1+row][y1+col][0] == targetImage[row][col][0] and groupImage[x1+row][y1+col][1] == targetImage[row][col][1] and groupImage[x1+row][y1+col][2] == targetImage[row][col][2]:
                         matchPercentage+=1
 
-            matchPercentage = ( matchPercentage / (len(targetImage)*len(targetImage[0])) ) * 100
+            # matchPercentage = ( matchPercentage / (23*35) ) * 100
+            print(matchPercentage)
             
             #print(matchPercentage) 
 
@@ -83,17 +86,23 @@ def CheckForCoRelation(threashold):
 def CheckForFitness(unsortedCoRelatedValues):
     sortedPopulationList = []
     corellatedValuesSortedList = sorted(unsortedCoRelatedValues.items(), key=lambda x: x[1])
+    # print(corellatedValuesSortedList[0])
     newDict = dict(corellatedValuesSortedList)
+    i = 0
     for key in newDict.keys():
+        # if i == 0:
+        #     print(newDict[key])
+        #     i+=1
         sortedPopulationList.append(key)
     return sortedPopulationList
 
 # Crossover and mutating the values in populationList and refilling the populationList
 def CrossoverAndMutate(sortedPopulationList):
     populationList.clear()
-    for i in range(0, len(sortedPopulationList), 2):
+    for i in range(0, len(sortedPopulationList)-1, 2):
         pt1 = sortedPopulationList[i][0]
         pt2 = sortedPopulationList[i][1]
+        print(i+1)
         pt3 = sortedPopulationList[i+1][0]
         pt4 = sortedPopulationList[i+1][1]
         pt1Bin = DecToBin(pt1)
@@ -154,8 +163,8 @@ def CrossoverAndMutate(sortedPopulationList):
         for i in range(0, len(pt3Bin)):
             newP2_x.append(p2.pop())
         newP2_y = p2
-        print(newP1_x, newP1_y)
-        print(newP2_x, newP2_y)
+        # print(newP1_x, newP1_y)
+        # print(newP2_x, newP2_y)
         x1 = BinToDec(newP1_x)
         y1 = BinToDec(newP1_y)
 
