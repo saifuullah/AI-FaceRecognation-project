@@ -1,8 +1,13 @@
-# initializing list  
-test_list = [1, 0, 0] 
-    
-# converting binary list to integer  
-res = int("".join(str(x) for x in test_list), 2) 
-  
-# printing result  
-print ("The converted integer value is : " +  str(res)) 
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2 as cv
+
+from skimage import data
+from skimage.feature import match_template
+
+
+image = cv.imread('groupGray.jpg')
+coin = cv.imread('boothiGray.jpg')
+
+result = match_template(coin, coin)
+print(result[0][0][0])

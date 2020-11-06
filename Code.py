@@ -3,6 +3,8 @@ from matplotlib import image
 from matplotlib import pyplot
 import cv2 as cv
 import numpy as np
+from skimage import data
+from skimage.feature import match_template
 import random
 # load image as pixel array
 groupImage = cv.imread('groupGray.jpg')
@@ -59,20 +61,18 @@ def CheckForCoRelation(threashold):
         x2 = x1 + rowsInSmallImage
         y2 = y1 + colsInSmallImage
         if (x2 < 512) and (y2 < 1024):
-            matchPercentage = 0
-            for row in range(len(targetImage)):    
-                for col in range(len(targetImage[0])):
-                    if groupImage[x1+row][y1+col][0] == targetImage[row][col][0] and groupImage[x1+row][y1+col][1] == targetImage[row][col][1] and groupImage[x1+row][y1+col][2] == targetImage[row][col][2]:
-                        matchPercentage+=1
+            co_related_value = 0
+            croppedIMG = groupImage[ x1:x2, y1:y2]
+            co_related_value = match_template(targetImage, croppedIMG)
 
-            # matchPercentage = ( matchPercentage / (23*35) ) * 100
-            print(matchPercentage)
+            # co_related_value = ( co_related_value / (23*35) ) * 100
+            print(co_related_value[0][0][0])
             
-            #print(matchPercentage) 
+            #print(co_related_value) 
 
-            corellatedValues[x1, y1] = [matchPercentage]
+            corellatedValues[x1, y1] = [co_related_value[0][0][0]]
 
-            if matchPercentage >= threashold:
+            if co_related_value >= threashold:
                 matchPoints.append([x1,y1])
         else:
             corellatedValues[x1,y1] = [0]        
@@ -102,7 +102,6 @@ def CrossoverAndMutate(sortedPopulationList):
     for i in range(0, len(sortedPopulationList)-1, 2):
         pt1 = sortedPopulationList[i][0]
         pt2 = sortedPopulationList[i][1]
-        print(i+1)
         pt3 = sortedPopulationList[i+1][0]
         pt4 = sortedPopulationList[i+1][1]
         pt1Bin = DecToBin(pt1)
@@ -177,7 +176,7 @@ def CrossoverAndMutate(sortedPopulationList):
 
 def main():
     threashold = 90
-    termVar = 10000
+    termVar = 1
     initializePopulationRandomly()
     while (termVar > 0):
         if CheckForCoRelation(threashold):
