@@ -50,8 +50,10 @@ def initializePopulationRandomly():
 # CheckOut Corelations
 
 def CheckForCoRelation(threashold):
-    for po in range(0, populationSize):
-
+    corellatedValues.clear()
+    for po in range(0, len(populationList) -1):
+        # print(len(populationList))
+        # print(po)
         x1 = populationList[po][0]
         y1 = populationList[po][1]
 
@@ -69,12 +71,12 @@ def CheckForCoRelation(threashold):
             
             #print(co_related_value) 
 
-            corellatedValues[x1, y1] = [co_related_value[0][0][0]]
+            corellatedValues[x1, y1] = co_related_value[0][0][0]
 
             if co_related_value >= threashold:
                 matchPoints.append([x1,y1])
         else:
-            corellatedValues[x1,y1] = [0]        
+            corellatedValues[x1,y1] = 0      
     if len(matchPoints) == 0:
         return False
     else:
@@ -99,8 +101,11 @@ def CheckForFitness(unsortedCoRelatedValues):
 
 # Crossover and mutating the values in populationList and refilling the populationList
 def CrossoverAndMutate(sortedPopulationList):
+    sortedPopulationList = list(sortedPopulationList)
     populationList.clear()
-    for i in range(0, len(sortedPopulationList)-1, 2):
+    i = 0
+    # print("List Size %d" %len(populationList))
+    for f in range(0, 50):
         pt1 = sortedPopulationList[i][0]
         pt2 = sortedPopulationList[i][1]
         pt3 = sortedPopulationList[i+1][0]
@@ -133,7 +138,7 @@ def CrossoverAndMutate(sortedPopulationList):
         else:
             for i in range(0, (l2-l1)):
                 p1.insert(0,0)
-        rand = random.randint(0, len(p1)-1)
+        rand = int((len(p1) / 2) +1)  #random.randint(0, len(p1)-1)
         # print(f"Before Crossover: p1: {p1} \n p2: {p2}")
         p1.reverse()
         p2.reverse()
@@ -172,9 +177,10 @@ def CrossoverAndMutate(sortedPopulationList):
         y2 = BinToDec(newP2_y)
         temp1 = [x1, y1]
         temp2 = [x2, y2]
+
         populationList.append(temp1)
         populationList.append(temp2)
-
+        i += 2
 def main():
     threashold = 0.9
     termVar = 1000
