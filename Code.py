@@ -66,7 +66,6 @@ def CheckForCoRelation(threashold):
             co_related_value = match_template(targetImage, croppedIMG)
 
             # co_related_value = ( co_related_value / (23*35) ) * 100
-            print(co_related_value[0][0][0])
             
             #print(co_related_value) 
 
@@ -175,8 +174,8 @@ def CrossoverAndMutate(sortedPopulationList):
         populationList.append(temp2)
 
 def main():
-    threashold = 90
-    termVar = 1
+    threashold = 0.9
+    termVar = 1000
     initializePopulationRandomly()
     while (termVar > 0):
         if CheckForCoRelation(threashold):
