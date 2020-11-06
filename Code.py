@@ -80,6 +80,8 @@ def CheckForCoRelation(threashold):
     else:
         return True    
 
+
+
 # SORTING THE DICTIONARY According To The Keys // Also Checking for fitness
 #Keys -- a points having a value of corelation
 def CheckForFitness(unsortedCoRelatedValues):
@@ -89,9 +91,9 @@ def CheckForFitness(unsortedCoRelatedValues):
     newDict = dict(corellatedValuesSortedList)
     i = 0
     for key in newDict.keys():
-        # if i == 0:
-        #     print(newDict[key])
-        #     i+=1
+        if i == 0:
+            print(newDict[key])
+            i+=1
         sortedPopulationList.append(key)
     return sortedPopulationList
 
