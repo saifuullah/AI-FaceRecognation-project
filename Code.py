@@ -98,10 +98,10 @@ def CheckForFitness(unsortedCoRelatedValues):
             print(newDict[key])
             i+=1
         sortedPopulationList.append(key)
-    return sortedPopulationList
+    return sortedPopulationList, newDict
 
 # Crossover and mutating the values in populationList and refilling the populationList
-def CrossoverAndMutate(sortedPopulationList):
+def CrossoverAndMutate(sortedPopulationList, sortDect):
     sortedPopulationList = list(sortedPopulationList)
     print(len(populationList))
     populationList.clear()
@@ -174,16 +174,18 @@ def CrossoverAndMutate(sortedPopulationList):
         temp1 = [x1, y1]
         temp2 = [x2, y2]
         if x1+len(targetImage)<=len(groupImage) and y1+len(targetImage[0]) <= len(groupImage[0]):
-            newFitVal = match_template(targetImage[x1:x1+len(targetImage), y1:y1+len(targetImage[0])])
+            newFitVal = match_template(groupImage[x1:x1+len(targetImage), y1:y1+len(targetImage[0])], targetImage)
             p1FitVal = float(newFitVal[0][0][0])
             parent1 = [pt1, pt2]   
-            if (p1FitVal > float(corellatedValues[parent1])):
+            xx = sortDect[parent1]
+            if (p1FitVal > float(xx)):
                 i += 1
                 populationList.append(temp1)
-            newFitVal = match_template(targetImage[x2:x2+len(targetImage), y2:y2+len(targetImage[0])])
+            newFitVal = match_template(groupImage[x2:x2+len(targetImage), y2:y2+len(targetImage[0])], targetImage)
             p2FitVal = float(newFitVal[0][0][0])
-            parent2 = [pt3, pt4]   
-            if (p2FitVal > float(corellatedValues[parent2])):
+            parent2 = [pt3, pt4] 
+            xx = sortDect[parent2]  
+            if (p2FitVal > float(xx)):
                 i += 1
                 populationList.append(temp2) 
 
@@ -196,8 +198,8 @@ def main():
         if CheckForCoRelation(threashold):
             print("Match Found ....{}" .format(matchPoints))
             break
-        sortedFitness = CheckForFitness(corellatedValues)
-        CrossoverAndMutate(sortedFitness)
+        sortedFitness , y = CheckForFitness(corellatedValues)
+        CrossoverAndMutate(sortedFitness, y)
         termVar -= 1
 
 
