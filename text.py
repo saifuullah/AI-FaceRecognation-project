@@ -1,13 +1,15 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2 as cv
+import arcade
 
-from skimage import data
-from skimage.feature import match_template
+class imp(arcade.Window):
+    def __init__(self):
+        super().__init__(1024, 512, "acc")
+    def on_draw(self):
+        a=arcade.load_texture("groupGray.jpg")
+        arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0,0,1024,512,a)
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        print(x, y)
 
 
-image = cv.imread('groupGray.jpg')
-coin = cv.imread('boothiGray.jpg')
-
-result = match_template(coin, coin)
-print(result[0][0][0])
+i = imp()
+arcade.run()

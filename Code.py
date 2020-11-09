@@ -1,4 +1,5 @@
 # load and display an image with Matplotlib
+from operator import le
 from matplotlib import image
 from matplotlib import pyplot
 import cv2 as cv
@@ -28,7 +29,7 @@ def BinToDec(binNum):
 #In the image variable,  we have an ndarray contain the pixels of group image
 #512 rows, 1024 colums 
 populationList = []
-populationSize = 100
+populationSize = 40
 matchPoints = []
 corellatedValues = {}
 
@@ -38,7 +39,7 @@ def initializePopulationRandomly():
     while(True):
         x = random.randint(0, 512)
         y = random.randint(0, 1024)
-        if len(populationList) > 100:
+        if len(populationList) == populationSize:
             break
         if (x+len(targetImage)) < len(groupImage) and (y+len(targetImage[0])) < len(groupImage[0]):
             tempList = []
@@ -102,10 +103,12 @@ def CheckForFitness(unsortedCoRelatedValues):
 # Crossover and mutating the values in populationList and refilling the populationList
 def CrossoverAndMutate(sortedPopulationList):
     sortedPopulationList = list(sortedPopulationList)
+    print(len(populationList))
     populationList.clear()
     i = 0
     # print("List Size %d" %len(populationList))
-    for f in range(0, 50):
+    while( i < populationSize):
+        # print(i)
         pt1 = sortedPopulationList[i][0]
         pt2 = sortedPopulationList[i][1]
         pt3 = sortedPopulationList[i+1][0]
@@ -114,50 +117,46 @@ def CrossoverAndMutate(sortedPopulationList):
         pt2Bin = DecToBin(pt2)
         pt3Bin = DecToBin(pt3)
         pt4Bin = DecToBin(pt4)
-
         p1 = []
         p2 = []
         for i in pt1Bin:
             p1.append(i)
         for i in pt2Bin:
             p1.append(i)
-
-
         for j in pt3Bin:
             p2.append(j)
         for j in pt4Bin:
             p2.append(j)
-
-
         l1 = len(p1)
         l2 = len(p2)
-
         if l1 > l2:
             for i in range(0, (l1-l2)):
                 p2.insert(0,0)
         else:
             for i in range(0, (l2-l1)):
                 p1.insert(0,0)
-        rand = int((len(p1) / 2) +1)  #random.randint(0, len(p1)-1)
+        rand = random.randint(0, len(p1)-1)
         # print(f"Before Crossover: p1: {p1} \n p2: {p2}")
-        p1.reverse()
-        p2.reverse()
-        for i in range(0, rand):
-            p1[i], p2[i] = p2[i], p1[i]
-        p1.reverse()
-        p2.reverse()
+        if random.randint(0, 100) > 5:
+            p1.reverse()
+            p2.reverse()
+            for i in range(0, rand):
+                p1[i], p2[i] = p2[i], p1[i]
+            p1.reverse()
+            p2.reverse()
         # print(f"after crossover {rand} \n, p1: {p1} \np2: {p2}")
     # Now Mutation
         rand = random.randint(0, len(p1)-1)
-        if p1[rand] == 0:
-            p1[rand] = 1
-        else:
-            p1[rand] = 0
+        if random.randint(0, 1000) < 80: 
+            if p1[rand] == 0:
+                p1[rand] = 1
+            else:
+                p1[rand] = 0
 
-        if p2[rand] == 0:
-            p2[rand] = 1
-        else:
-            p2[rand] = 0
+            if p2[rand] == 0:
+                p2[rand] = 1
+            else:
+                p2[rand] = 0
         newP1_x = []
         newP1_y = []
         newP2_x = []
@@ -168,19 +167,27 @@ def CrossoverAndMutate(sortedPopulationList):
         for i in range(0, len(pt3Bin)):
             newP2_x.append(p2.pop())
         newP2_y = p2
-        # print(newP1_x, newP1_y)
-        # print(newP2_x, newP2_y)
         x1 = BinToDec(newP1_x)
         y1 = BinToDec(newP1_y)
-
         x2 = BinToDec(newP2_x)
         y2 = BinToDec(newP2_y)
         temp1 = [x1, y1]
         temp2 = [x2, y2]
+        if x1+len(targetImage)<=len(groupImage) and y1+len(targetImage[0]) <= len(groupImage[0]):
+            newFitVal = match_template(targetImage[x1:x1+len(targetImage), y1:y1+len(targetImage[0])])
+            p1FitVal = float(newFitVal[0][0][0])
+            parent1 = [pt1, pt2]   
+            if (p1FitVal > float(corellatedValues[parent1])):
+                i += 1
+                populationList.append(temp1)
+            newFitVal = match_template(targetImage[x2:x2+len(targetImage), y2:y2+len(targetImage[0])])
+            p2FitVal = float(newFitVal[0][0][0])
+            parent2 = [pt3, pt4]   
+            if (p2FitVal > float(corellatedValues[parent2])):
+                i += 1
+                populationList.append(temp2) 
 
-        populationList.append(temp1)
-        populationList.append(temp2)
-        i += 2
+    # print(len(populationList))
 def main():
     threashold = 0.9
     termVar = 1000
